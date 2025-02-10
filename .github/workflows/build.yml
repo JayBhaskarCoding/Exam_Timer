@@ -33,13 +33,17 @@ jobs:
         run: docker build -t my-custom-buildozer .
 
       # Run Buildozer inside the custom Docker container
-      - name: Run Buildozer
-        run: |
-          docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer /bin/bash -c "
-          export PATH=\$HOME/.local/bin:\$PATH &&
-          source ~/.bashrc &&
-          buildozer android debug"
+      #- name: Run Buildozer
+        #run: |
+         # docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer /bin/bash -c "
+         # export PATH=\$HOME/.local/bin:\$PATH &&
+         # source ~/.bashrc &&
+         # buildozer android debug"
 
+      - name: Run Buildozer in Docker
+        run: | 
+          docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
+        
       - name: Check APK location
         run: find . -name "*.apk" || echo "No APKs found"
 
