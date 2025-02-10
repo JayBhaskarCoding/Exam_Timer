@@ -8,41 +8,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    # used to cache dependencies with a timeout
+      # Used to cache dependencies with a timeout
       - name: Get Date
         id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
+        run: echo "date=$(date -u +%Y%m%d)" >> $GITHUB_ENV
 
       - name: Cache Buildozer global directory
         uses: actions/cache@v4
         with:
-          path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
+          path: ~/.buildozer_global  # Correct path
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
       - uses: actions/cache@v4
         with:
-          path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+          path: ~/.buildozer  # Correct path
+          key: ${{ runner.os }}-${{ env.date }}-${{ hashFiles('buildozer.spec') }}
 
       - name: Pull Buildozer Image
-        run: docker pull kivy/buildozer:latest
+        run: docker pull kivy/buildozer:2023.09.10  # Use a specific version
 
-      - name: Disable BuildKit
-        run: |
-          echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
+      - name: Disable BuildKit (Fix OCI image issue)
+        run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
 
       - name: Build Docker Image
         run: docker build .
         env:
           DOCKER_BUILDKIT: 0
-
-          
-      #- name: Enable OCI Compatibility
-        #run: DOCKER_BUILDKIT=0 docker build .
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
@@ -51,8 +44,8 @@ jobs:
           command: buildozer android debug
           buildozer_version: stable
 
-      - name: Upload artifacts
+      - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          name: apk-package
+          path: bin/*.apk  # Ensures APK is correctly uploaded
