@@ -37,9 +37,8 @@ COPY --chown=user:user . ${SRC_DIR}
 
 # Install Buildozer and dependencies
 # Install Buildozer properly
-RUN pip3 install --user --upgrade "Cython<3.0" wheel pip buildozer && \
-    echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
-
+RUN pip3 install --user --upgrade buildozer
+ENV PATH="/home/user/.local/bin:$PATH"
 
 # Ensure Buildozer is installed and accessible
 RUN echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
