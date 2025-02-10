@@ -98,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apk-output
-          path: . **/*.apk
+          path: . *.apk
           if-no-files-found: warn
           compression-level: 6
           overwrite: false
