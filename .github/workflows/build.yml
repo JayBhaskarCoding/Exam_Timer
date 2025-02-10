@@ -40,3 +40,7 @@ jobs:
         with:
           name: package
           path: ${{ steps.buildozer.outputs.filename }}
+
+      - name: Pull Buildozer Image
+        run: docker pull kivy/buildozer:latest
+
