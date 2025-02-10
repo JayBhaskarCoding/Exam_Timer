@@ -43,8 +43,8 @@ jobs:
       - name: Check Buildozer Path
         run: echo $PATH
 
-      #- name: Fix Buildozer Permissions
-        #run: sudo chmod -R 777 .buildozer
+      - name: Fix Buildozer Permissions
+        run: sudo chmod -R 777 .buildozer
 
       #- name: Create .buildozer directory
        # run: mkdir -p $PWD/.buildozer && chmod -R 777 $PWD/.buildozer
