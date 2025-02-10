@@ -43,6 +43,14 @@ jobs:
       - name: Ensure .buildozer directory exists
         run: mkdir -p .buildozer
 
+      - name: Ensure /home/user exists
+        run: |
+          sudo mkdir -p /home/user
+          sudo chown -R $(id -u):$(id -g) /home/user
+
+      - name: Ensure bin directory exists
+        run: mkdir -p /home/user/hostcwd/bin && chmod 755 /home/user/hostcwd/bin
+
       - name: Fix permissions for Buildozer output
         run: sudo chmod -R 777 /home/user/hostcwd
 
@@ -63,9 +71,6 @@ jobs:
         # Run Buildozer
       - name: Run Buildozer in Docker
         run: docker run --rm -u $(id -u):$(id -g) -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
-
-      - name: Ensure bin directory exists
-        run: mkdir -p /home/user/hostcwd/bin && chmod 755 /home/user/hostcwd/bin
 
       - name: Check Buildozer Output
         run: ls -R .buildozer || echo ".buildozer directory not found"
