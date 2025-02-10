@@ -28,13 +28,17 @@ jobs:
       - name: Disable BuildKit
         run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
 
-      # Build the Docker image from the repository's Dockerfile
+      # Build the Docker image from the repository’s Dockerfile
       - name: Build Docker Image
         run: docker build -t my-custom-buildozer .
 
       # Run Buildozer inside the custom Docker container
       - name: Run Buildozer
-        run: docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer /home/user/.local/bin/buildozer android debug
+        run: |
+          docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "
+          export PATH=\$HOME/.local/bin:\$PATH &&
+          source ~/.bashrc &&
+          buildozer android debug"
 
       # Upload APK artifact
       - name: Upload APK
