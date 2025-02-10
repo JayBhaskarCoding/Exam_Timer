@@ -40,9 +40,17 @@ jobs:
           source ~/.bashrc &&
           buildozer android debug"
       # Upload the APK File
-      - name: Upload artifacts
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          name: apk-output
+          path: |
+            bin/*.apk
+            **/bin/*.apk
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        env:
+          DOCKER_BUILDKIT: 0
 
