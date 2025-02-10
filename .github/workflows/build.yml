@@ -51,8 +51,9 @@ jobs:
         run: |
           docker run --rm -u $(id -u):$(id -g) -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "export PATH=\$HOME/.local/bin:\$PATH && buildozer android debug"
 
-      - name: List All Files After Buildozer
-        run: ls -R
+      - name: Check Buildozer Output
+        run: ls -R .buildozer || echo ".buildozer directory not found"
+
           
       #- name: Check APK location
        # run: find . -name "*.apk" || echo "No APKs found"
