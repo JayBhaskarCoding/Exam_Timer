@@ -78,6 +78,15 @@ jobs:
       - name: Debug Buildozer Path
         run: docker run --rm my-custom-buildozer bash -c "echo \$PATH && which buildozer"
 
+      - name: Buildozer path install check
+        run: docker run --rm my-custom-buildozer bash -c "pip show buildozer"
+
+      - name: Search for buildozer
+        run: docker run --rm my-custom-buildozer bash -c "find / -name buildozer 2>/dev/null"
+
+      - name: Check python userbase
+        run: docker run --rm my-custom-buildozer bash -c "python3 -m site --user-base"
+
       - name: Print Buildozer Logs
         run: cat .buildozer/android/platform/build.log || echo "No build log found"
           
