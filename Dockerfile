@@ -42,5 +42,5 @@ RUN pip3 install --user --upgrade "Cython<3.0" wheel pip buildozer
 RUN echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
 RUN /bin/bash -c "source ~/.bashrc"
 
-# Set entrypoint
-ENTRYPOINT ["buildozer"]
+# Use Bash as the entrypoint
+ENTRYPOINT ["/bin/bash", "-c"]
