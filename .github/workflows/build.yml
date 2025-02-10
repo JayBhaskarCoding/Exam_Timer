@@ -60,8 +60,7 @@ jobs:
         with:
           name: apk-output
           path: |
-            bin/*.apk
-            **/bin/*.apk
+            **/*.apk
           if-no-files-found: warn
           compression-level: 6
           overwrite: false
