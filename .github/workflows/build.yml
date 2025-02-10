@@ -62,8 +62,9 @@ jobs:
          # buildozer android debug"
         # Run Buildozer
       - name: Run Buildozer in Docker
-        run: |
-          docker run --rm -u $(id -u):$(id -g) -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "export PATH=\$HOME/.local/bin:\$PATH && buildozer android debug"
+        run: docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
+        env:
+          USER: ${{ runner.username }}
 
       - name: Check Buildozer Output
         run: ls -R .buildozer || echo ".buildozer directory not found"
