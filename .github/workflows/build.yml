@@ -35,7 +35,7 @@ jobs:
       # Run Buildozer inside the custom Docker container
       - name: Run Buildozer
         run: |
-          docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "
+          docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer /bin/bash -c "
           export PATH=\$HOME/.local/bin:\$PATH &&
           source ~/.bashrc &&
           buildozer android debug"
