@@ -52,7 +52,7 @@ WORKDIR ${WORK_DIR}
 COPY --chown=user:user . ${SRC_DIR}
 
 # Install Buildozer and dependencies
-RUN pip3 install --user --upgrade "Cython<3.0" wheel pip ${SRC_DIR}
+RUN pip3 install --upgrade "Cython<3.0" wheel pip && pip3 install --no-cache-dir -r ${SRC_DIR}/requirements.txt
 
 # Fix permissions issue with .buildozer
 RUN mkdir -p ${HOME_DIR}/.buildozer && chmod -R 777 ${HOME_DIR}/.buildozer
