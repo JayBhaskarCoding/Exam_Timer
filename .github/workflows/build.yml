@@ -77,7 +77,7 @@ jobs:
           #DOCKER_BUILDKIT: 0
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: package
           path: ${{ steps.buildozer.outputs.filename }}
