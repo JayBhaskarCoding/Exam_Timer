@@ -8,33 +8,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4  # Checkout your repo
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Used to cache dependencies with a timeout
-      - name: Get Date
-        id: get-date
-        run: echo "date=$(date -u +%Y%m%d)" >> $GITHUB_ENV
-
+      # Cache dependencies
       - name: Cache Buildozer global directory
         uses: actions/cache@v4
         with:
-          path: ~/.buildozer_global
+          path: .buildozer_global
           key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
-      - uses: actions/cache@v4
+      - name: Cache .buildozer directory
+        uses: actions/cache@v4
         with:
-          path: ~/.buildozer
-          key: ${{ runner.os }}-${{ env.date }}-${{ hashFiles('buildozer.spec') }}
+          path: .buildozer
+          key: ${{ runner.os }}-${{ github.run_id }}
 
-      # Use your repository's Dockerfile instead of pulling an image
+      # Disable BuildKit to avoid metadata issues
+      - name: Disable BuildKit
+        run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
+
+      # Build the Docker image from the repository's Dockerfile
       - name: Build Docker Image
-        run: docker build -t my-custom-buildozer -f ./Dockerfile .
+        run: docker build -t my-custom-buildozer .
 
-      - name: Build with Buildozer
-        run: docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
+      # Run Buildozer inside the custom Docker container
+      - name: Run Buildozer
+        run: docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer /home/user/.local/bin/buildozer android debug
 
-      - name: Upload APK as Artifact
+      # Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: apk-package
+          name: apk-output
           path: bin/*.apk
