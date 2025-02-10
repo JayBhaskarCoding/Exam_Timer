@@ -28,6 +28,12 @@ jobs:
           path: .buildozer
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
 
+      - name: Pull Buildozer Image
+        run: docker pull kivy/buildozer:latest
+
+      - name: Enable OCI Compatibility
+        run: DOCKER_BUILDKIT=0 docker build .
+
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
@@ -40,11 +46,3 @@ jobs:
         with:
           name: package
           path: ${{ steps.buildozer.outputs.filename }}
-
-      - name: Pull Buildozer Image
-        run: docker pull kivy/buildozer:latest
-
-      - name: Enable OCI Compatibility
-        run: DOCKER_BUILDKIT=0 docker build .
-
-
