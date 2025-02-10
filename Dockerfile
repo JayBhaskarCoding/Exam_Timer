@@ -53,7 +53,8 @@ COPY --chown=user:user requirements.txt ${SRC_DIR}/requirements.txt
 COPY --chown=user:user . ${SRC_DIR}
 
 # Install Buildozer and dependencies
-RUN pip3 install --upgrade "Cython<3.0" wheel pip && pip3 install --no-cache-dir -r ${SRC_DIR}/requirements.txt
+RUN pip3 install --upgrade "Cython<3.0" wheel pip
+RUN test -f ${SRC_DIR}/requirements.txt && pip3 install --no-cache-dir -r ${SRC_DIR}/requirements.txt || echo "No requirements.txt found, skipping..."
 
 # Fix permissions issue with .buildozer
 RUN mkdir -p ${HOME_DIR}/.buildozer && chmod -R 777 ${HOME_DIR}/.buildozer
