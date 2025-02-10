@@ -75,16 +75,16 @@ jobs:
         run: find . -name "*.apk" || echo "No APKs found"
 
       # Upload the APK File
-      #- name: Upload APK
-       # uses: actions/upload-artifact@v4
-       # with:
-        #  name: apk-output
-        #  path: |
-       #     **/*.apk
-         # if-no-files-found: warn
-        #  compression-level: 6
-          #overwrite: false
-        #  include-hidden-files: false
-        #env:
-        #  DOCKER_BUILDKIT: 0
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-output
+          path: |
+            **/*.apk
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        env:
+          DOCKER_BUILDKIT: 0
         
