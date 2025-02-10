@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4  # Checkout your repo
 
       # Used to cache dependencies with a timeout
       - name: Get Date
@@ -18,34 +18,23 @@ jobs:
       - name: Cache Buildozer global directory
         uses: actions/cache@v4
         with:
-          path: ~/.buildozer_global  # Correct path
+          path: ~/.buildozer_global
           key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
       - uses: actions/cache@v4
         with:
-          path: ~/.buildozer  # Correct path
+          path: ~/.buildozer
           key: ${{ runner.os }}-${{ env.date }}-${{ hashFiles('buildozer.spec') }}
 
-      - name: Pull Buildozer Image
-        run: docker pull kivy/buildozer:2023.09.10  # Use a specific version
-
-      - name: Disable BuildKit (Fix OCI image issue)
-        run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
-
+      # Use your repository's Dockerfile instead of pulling an image
       - name: Build Docker Image
-        run: docker build .
-        env:
-          DOCKER_BUILDKIT: 0
+        run: docker build -t my-custom-buildozer -f ./Dockerfile .
 
       - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: stable
+        run: docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: apk-package
-          path: bin/*.apk  # Ensures APK is correctly uploaded
+          path: bin/*.apk
