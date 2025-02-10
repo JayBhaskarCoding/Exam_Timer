@@ -44,3 +44,7 @@ jobs:
       - name: Pull Buildozer Image
         run: docker pull kivy/buildozer:latest
 
+      - name: Enable OCI Compatibility
+        run: DOCKER_BUILDKIT=0 docker build .
+
+
