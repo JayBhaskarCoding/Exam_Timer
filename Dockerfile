@@ -1,32 +1,4 @@
 # Dockerfile for providing buildozer
-#
-# Build with:
-# docker build --tag=kivy/buildozer .
-#
-# Or for macOS using Docker Desktop:
-#
-# docker buildx build --platform=linux/amd64 -t kivy/buildozer .
-#
-# In order to give the container access to your current working directory
-# it must be mounted using the --volume option.
-# Run with (e.g. `buildozer --version`):
-# docker run \
-#   --volume "$HOME/.buildozer":/home/user/.buildozer \
-#   --volume "$PWD":/home/user/hostcwd \
-#   kivy/buildozer --version
-#
-# Or for interactive shell:
-# docker run --interactive --tty --rm \
-#   --volume "$HOME/.buildozer":/home/user/.buildozer \
-#   --volume "$PWD":/home/user/hostcwd \
-#   --entrypoint /bin/bash \
-#   kivy/buildozer
-#
-# If you get a `PermissionError` on `/home/user/.buildozer/cache`,
-# try updating the permissions from the host with:
-# sudo chown $USER -R ~/.buildozer
-# Or simply recreate the directory from the host with:
-# rm -rf ~/.buildozer && mkdir ~/.buildozer
 
 FROM ubuntu:22.04
 
@@ -36,7 +8,7 @@ ENV WORK_DIR="${HOME_DIR}/hostcwd" \
     SRC_DIR="${HOME_DIR}/src" \
     PATH="${HOME_DIR}/.local/bin:${PATH}"
 
-# configures locale
+# Configure locale
 RUN apt update -qq > /dev/null \
     && DEBIAN_FRONTEND=noninteractive apt install -qq --yes --no-install-recommends \
     locales && \
@@ -45,7 +17,7 @@ ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8"
 
-# system requirements to build most of the recipes
+# Install system dependencies
 RUN apt update -qq > /dev/null \
     && DEBIAN_FRONTEND=noninteractive apt install -qq --yes --no-install-recommends \
     autoconf \
@@ -67,19 +39,25 @@ RUN apt update -qq > /dev/null \
     sudo \
     unzip \
     zip \
-    zlib1g-dev
+    zlib1g-dev \
+    && apt clean && rm -rf /var/lib/apt/lists/*  # Reduce image size
 
-# prepares non root env
+# Prepare non-root environment
 RUN useradd --create-home --shell /bin/bash ${USER}
-# with sudo access and no password
-RUN usermod -append --groups sudo ${USER}
+RUN usermod -aG sudo ${USER}
 RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER ${USER}
 WORKDIR ${WORK_DIR}
 COPY --chown=user:user . ${SRC_DIR}
 
-# installs buildozer and dependencies
+# Install Buildozer and dependencies
 RUN pip3 install --user --upgrade "Cython<3.0" wheel pip ${SRC_DIR}
+
+# Fix permissions issue with .buildozer
+RUN mkdir -p ${HOME_DIR}/.buildozer && chmod -R 777 ${HOME_DIR}/.buildozer
+
+# Disable BuildKit to avoid OCI image format issues
+ENV DOCKER_BUILDKIT=0
 
 ENTRYPOINT ["buildozer"]
