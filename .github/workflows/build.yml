@@ -40,8 +40,8 @@ jobs:
       - name: Check Buildozer Installation
         run: which buildozer || echo "Buildozer not found"
 
-      - name: Check Buildozer Path
-        run: echo $PATH
+      - name: Ensure .buildozer directory exists
+        run: mkdir -p .buildozer
 
       - name: Fix Buildozer Permissions
         run: sudo chmod -R 777 .buildozer
