@@ -35,8 +35,7 @@ jobs:
       - name: Install Buildozer
         run: |
           pip install --user --upgrade buildozer
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
+          echo "$HOME/.local/bin" >> $GITHUB_PATH  # Ensure it's added to PATH
 
       - name: Check Buildozer Installation
         run: which buildozer || echo "Buildozer not found"
@@ -72,8 +71,8 @@ jobs:
       - name: Print Buildozer Logs
         run: cat .buildozer/android/platform/build.log || echo "No build log found"
           
-      #- name: Check APK location
-       # run: find . -name "*.apk" || echo "No APKs found"
+      - name: Check APK location
+        run: find . -name "*.apk" || echo "No APKs found"
 
       # Upload the APK File
       #- name: Upload APK
