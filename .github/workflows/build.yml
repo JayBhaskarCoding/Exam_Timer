@@ -32,12 +32,12 @@ jobs:
       - name: Build Docker Image
         run: docker build -t my-custom-buildozer .
 
-      - name: Create .buildozer directory
-        run: mkdir -p $PWD/.buildozer && chmod -R 777 $PWD/.buildozer
+      #- name: Create .buildozer directory
+        #run: mkdir -p $PWD/.buildozer && chmod -R 777 $PWD/.buildozer
         
       # Fix permissions for .buildozer directory
-      - name: Fix permissions
-        run: sudo chown -R $(id -u):$(id -g) $PWD
+      #- name: Fix permissions
+        #run: sudo chown -R $(id -u):$(id -g) $PWD
 
       # Run Buildozer inside the custom Docker container
       #- name: Run Buildozer
@@ -47,25 +47,37 @@ jobs:
          # source ~/.bashrc &&
          # buildozer android debug"
         # Run Buildozer
-      - name: Run Buildozer in Docker
-        run: |
-          docker run --rm -u $(id -u):$(id -g) -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "export PATH=\$HOME/.local/bin:\$PATH && buildozer android debug"
+      #- name: Run Buildozer in Docker
+        #run: |
+          #docker run --rm -u $(id -u):$(id -g) -v $PWD:/home/user/hostcwd my-custom-buildozer bash -c "export PATH=\$HOME/.local/bin:\$PATH && buildozer android debug"
+
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
           
-      - name: Check APK location
-        run: find . -name "*.apk" || echo "No APKs found"
+      #- name: Check APK location
+        #run: find . -name "*.apk" || echo "No APKs found"
 
       # Upload the APK File
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk-output
-          path: |
-            bin/*.apk
-            **/bin/*.apk
-          if-no-files-found: warn
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: false
-        env:
-          DOCKER_BUILDKIT: 0
+      #- name: Upload APK
+        #uses: actions/upload-artifact@v4
+        #with:
+          #name: apk-output
+          #path: |
+            #bin/*.apk
+            #**/bin/*.apk
+          #if-no-files-found: warn
+          #compression-level: 6
+          #overwrite: false
+          #include-hidden-files: false
+        #env:
+          #DOCKER_BUILDKIT: 0
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: ${{ steps.buildozer.outputs.filename }}
