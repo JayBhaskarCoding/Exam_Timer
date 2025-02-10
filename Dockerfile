@@ -49,6 +49,7 @@ RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER ${USER}
 WORKDIR ${WORK_DIR}
+COPY --chown=user:user requirements.txt ${SRC_DIR}/requirements.txt
 COPY --chown=user:user . ${SRC_DIR}
 
 # Install Buildozer and dependencies
