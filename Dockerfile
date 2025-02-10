@@ -6,6 +6,8 @@ ENV USER="user"
 ENV HOME_DIR="/home/${USER}"
 ENV WORK_DIR="${HOME_DIR}/hostcwd"
 ENV SRC_DIR="${HOME_DIR}/src"
+
+# Set PATH to include user-installed binaries
 ENV PATH="${HOME_DIR}/.local/bin:${PATH}"
 
 # Install system dependencies
@@ -21,12 +23,12 @@ ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8"
 
-# Create non-root user and set permissions
+# Create a non-root user and set permissions
 RUN useradd --create-home --shell /bin/bash ${USER} && \
     usermod -append --groups sudo ${USER} && \
     echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Switch to non-root user
+# Switch to the non-root user
 USER ${USER}
 WORKDIR ${WORK_DIR}
 
@@ -36,5 +38,9 @@ COPY --chown=user:user . ${SRC_DIR}
 # Install Buildozer and dependencies
 RUN pip3 install --user --upgrade "Cython<3.0" wheel pip buildozer
 
-# Set entrypoint to Buildozer
-ENTRYPOINT ["/home/user/.local/bin/buildozer"]
+# Ensure Buildozer is installed and accessible
+RUN echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
+RUN /bin/bash -c "source ~/.bashrc"
+
+# Set entrypoint
+ENTRYPOINT ["buildozer"]
