@@ -31,10 +31,9 @@ jobs:
       - name: Pull Buildozer Image
         run: docker pull kivy/buildozer:latest
 
-      - name: Build Docker Image Without BuildKit
+      - name: Disable BuildKit
         run: |
-          export DOCKER_BUILDKIT=0
-          docker build --no-cache --progress=plain .
+          echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
 
           
       #- name: Enable OCI Compatibility
