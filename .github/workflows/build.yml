@@ -31,6 +31,9 @@ jobs:
       # Build the Docker image from the repository’s Dockerfile
       - name: Build Docker Image
         run: docker build -t my-custom-buildozer .
+      # Fix permissions for .buildozer directory
+      - name: Fix permissions
+        run: sudo chown -R $(id -u):$(id -g) $PWD
 
       # Run Buildozer inside the custom Docker container
       #- name: Run Buildozer
@@ -39,7 +42,7 @@ jobs:
          # export PATH=\$HOME/.local/bin:\$PATH &&
          # source ~/.bashrc &&
          # buildozer android debug"
-
+        # Run Buildozer
       - name: Run Buildozer in Docker
         run: | 
           docker run --rm -v $PWD:/home/user/hostcwd my-custom-buildozer buildozer android debug
