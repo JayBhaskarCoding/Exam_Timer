@@ -32,12 +32,20 @@ jobs:
       - name: Build Docker Image
         run: docker build -t my-custom-buildozer .
 
+      - name: Install Buildozer
+        run: |
+          pip install --user --upgrade buildozer
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+
       - name: Check Buildozer Installation
         run: which buildozer || echo "Buildozer not found"
 
+      - name: Check Buildozer Path
+        run: echo $PATH
 
-      - name: Fix Buildozer Permissions
-        run: sudo chmod -R 777 .buildozer
+      #- name: Fix Buildozer Permissions
+        #run: sudo chmod -R 777 .buildozer
 
       #- name: Create .buildozer directory
        # run: mkdir -p $PWD/.buildozer && chmod -R 777 $PWD/.buildozer
